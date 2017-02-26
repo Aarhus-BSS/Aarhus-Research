@@ -1,6 +1,6 @@
 # Community Agents Simulation & Trust/Reputation Research
-![AU_Logo](https://github.com/Aarhus-BSS/AUResearch/blob/master/misc/au_standard_logo.jpg) 
-![AUBSS_Logo](https://github.com/Aarhus-BSS/AUResearch/blob/master/misc/BSSlogo_blue_DK_01.png)
+![AU_Logo](https://github.com/Aarhus-BSS/Aarhus-Research/blob/master/misc/au_standard_logo.jpg) 
+![AUBSS_Logo](https://github.com/Aarhus-BSS/Aarhus-Research/blob/master/misc/BSSlogo_blue_DK_01.png)
 
 [![License](https://img.shields.io/hexpm/l/plug.svg)]()
 [![ProjectVersion](https://img.shields.io/badge/version-alpha-orange.svg)]()
@@ -14,7 +14,7 @@ This is an early stage development project, many things may change or be removed
 
 For git SSH cloning you need a RSA Key.
 ```sh
-$ git clone git@github.com:Aarhus-BSS/AUResearch.git
+$ git clone git@github.com:Aarhus-BSS/Aarhus-Research.git
 ```
 
 ## Usage
