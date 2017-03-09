@@ -31,7 +31,19 @@ public class AUResearch
                 {
                     public void run() 
                     {
-                        new CEditor().setVisible(true);
+                        CEditor dialog = new CEditor();
+                        dialog.setLocationRelativeTo(null);
+
+                        dialog.addWindowListener(new java.awt.event.WindowAdapter() 
+                        {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent e) 
+                            {
+                                System.exit(0);
+                            }
+                        });
+                        dialog.setVisible(true);
+                        //new CEditor().setVisible(true);
                     }
                 });
             }
