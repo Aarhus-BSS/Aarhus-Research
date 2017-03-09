@@ -345,7 +345,6 @@ public class MainMenu extends javax.swing.JDialog implements Runnable {
 
         jCheckBox1.setSelected(true);
         jCheckBox1.setText("Use same agents every Round");
-        jCheckBox1.setActionCommand("Use same agents every Round");
 
         jCheckBox2.setSelected(true);
         jCheckBox2.setText("Enable mortality");
@@ -488,7 +487,6 @@ public class MainMenu extends javax.swing.JDialog implements Runnable {
         );
 
         GraphTab.getAccessibleContext().setAccessibleName("AVG Problem Solve pR");
-        jCheckBox1.getAccessibleContext().setAccessibleName("Use same agents every Round");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

@@ -6,7 +6,9 @@
 package auresearch;
 
 import Common.Configuration.ConfigManager;
+import Common.Logging.ILogManager;
 import Common.Logging.cLogConsole;
+import Graphics.CEditor;
 import java.io.IOException;
 
 /**
@@ -21,16 +23,29 @@ public class AUResearch
         FactoryHolder._logManager = new cLogConsole();
         FactoryHolder._logManager.initializeSession("session");
         
-        // We import the configuration stuff, it is fundamental to have this.
-        FactoryHolder._configManager = new ConfigManager();
-        if (FactoryHolder._configManager.hasError())
-            return;
-        
-        //Mint.initAndStartSession(null, FactoryHolder._configManager.getStringValue("MINT_APIKEY"));
-        // Import the grade table.
-        //GradeTableConverter.setTable(FactoryHolder._configManager.getArrayValue("GRADE_TABLE"));
-        
-        // Override simulator initialization and function to the ModeSwitcher.
-        ModeSwitcher.start(FactoryHolder._configManager.getStringValue("MODE"));
+        if (args.length > 0) {
+            if (args[0].compareToIgnoreCase("-editor") == 0)
+            {
+                FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_INFORMATION, "Configuration editor has been requested, firing up!");
+                java.awt.EventQueue.invokeLater(new Runnable() 
+                {
+                    public void run() {
+                        new CEditor().setVisible(true);
+                    }
+                });
+            }
+        } else {
+            // We import the configuration stuff, it is fundamental to have this.
+            FactoryHolder._configManager = new ConfigManager();
+            if (FactoryHolder._configManager.hasError())
+                return;
+
+            //Mint.initAndStartSession(null, FactoryHolder._configManager.getStringValue("MINT_APIKEY"));
+            // Import the grade table.
+            //GradeTableConverter.setTable(FactoryHolder._configManager.getArrayValue("GRADE_TABLE"));
+
+            // Override simulator initialization and function to the ModeSwitcher.
+            ModeSwitcher.start(FactoryHolder._configManager.getStringValue("MODE"));
+        }
     }
 }

@@ -537,11 +537,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Use same agents every Round"/>
-        <Property name="actionCommand" type="java.lang.String" value="Use same agents every Round"/>
       </Properties>
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Use same agents every Round"/>
-      </AccessibilityProperties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBox2">
       <Properties>

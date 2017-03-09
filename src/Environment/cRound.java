@@ -180,7 +180,7 @@ public class cRound implements IRound
         int _removedChallenges = 0;
         
         for (int i = 0; i < this._sAgents.size(); i++)
-            if (this._sAgents.get(i).getStats()._idledRounds >= FactoryHolder._configManager.getNumberValue("MAX_IDLED_ROUNDS"))
+            if (this._sAgents.get(i).getStats()._idledRounds > FactoryHolder._configManager.getNumberValue("MAX_IDLED_ROUNDS"))
             {
                 this._deadSAgents.add(this._sAgents.get(i));
                 this._sAgents.remove(i);
@@ -188,7 +188,7 @@ public class cRound implements IRound
             }
         
         for (int i = 0; i < this._challenge.size(); i++)
-            if (this._challenge.get(i)._idledRounds >= FactoryHolder._configManager.getNumberValue("MAX_CHALLENGE_IDLE_ROUNDS"))
+            if (this._challenge.get(i)._idledRounds > FactoryHolder._configManager.getNumberValue("MAX_CHALLENGE_IDLE_ROUNDS"))
             {
                 ProposerAgent _reference = this._challenge.get(i).getAuthor();
                 this._deadPAgents.add(_reference);
