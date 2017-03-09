@@ -22,6 +22,7 @@ public class ProposerAgent
     private Challenge _challengeProposed = null;
     private ArrayList<cSkill> _skills = new ArrayList<>();
     private boolean _lastSolved = false;
+    public int _problemsSolvedAmount = 0;
     
     public boolean getLastSolved()
     {
@@ -35,29 +36,17 @@ public class ProposerAgent
     
     public void _generateProblem()
     {
-        //FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "A new challenge is being created.");
-        
         int[] _difficultyMap = new int[FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size()];
         ArrayList<cSkill> _requirements = new ArrayList<>();
         
-        // Fill it with zeroes.
         for (int i = 0; i < _difficultyMap.length; i++)
             _difficultyMap[i] = 0;
-        
-        // Randomize n requirements from 0 to the maximum experience required
-        //for (int i = 0; i < FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_DIFFICULTYMAP"); i++)
-        //    _difficultyMap[i] = this._random.nextInt(FactoryHolder._configManager.getNumberValue("REQUIREMENT_MAXIMUM_RANDOM_EXPERIENCE") + 1);
         
         for (int i = 0; i < FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_DIFFICULTYMAP"); i++)
         {
             int _randomAccessSkill = this._random.nextInt(FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size());
             _difficultyMap[_randomAccessSkill] = this._random.nextInt(FactoryHolder._configManager.getNumberValue("REQUIREMENT_MAXIMUM_RANDOM_EXPERIENCE") + 1);
         }
-        
-        //FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_INFORMATION, "Generated difficulty map:");
-        
-        //for (int i = 0; i < _difficultyMap.length; i++)
-        //    FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_INFORMATION, String.valueOf(_difficultyMap[i]));
         
         for (int i = 0; i < _difficultyMap.length; i++)
         {
@@ -125,18 +114,7 @@ public class ProposerAgent
     {
         ArrayList<cSkill> _newSet = new ArrayList<>();
         cSkill _newSkillSlot = null;
-        /*
-        if (FactoryHolder._configManager.getStringValue("PA_ENABLE_MUTATION_RATE").equals("true")) 
-        {
-            for (int i = 0; i < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); i++)
-            {
-                // Proposers have no skill set.
-                //_newSkillSlot = this._mutateSkill(this._skills.get(i), FactoryHolder._configManager.getStringValue("PA_MUTATION_RATE_SIGN"));
-                //_newSet.add(_newSkillSlot);
-            }
-            return new ProposerAgent(_newSet);
-        }
-        */
+        
         return new ProposerAgent(this._skills);
     }
     

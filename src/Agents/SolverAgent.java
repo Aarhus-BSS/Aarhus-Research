@@ -27,37 +27,6 @@ public class SolverAgent implements Comparable<SolverAgent>
     
     public void _setupAgent()
     {
-        /*
-        // SKILL SETUP.
-        
-        // First of all, create the skill set (most generic as possible to allow customized skills).
-        for (int i = 0; i < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); i++)
-            this._skills.add(new cSkill(FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").get(i).toString()));
-        
-        // Populate the "special" skills through the rude random law.
-        for (int i = 1; i < FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_SKILLS"); i++)
-            this._skills
-                    .get(this._random.nextInt(FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size()))
-                        .setGrade(this._random.nextInt(FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_GRADE") + 1));
-        
-        // Populate the remaining skills with the default value.
-        for (int i = 0; i < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); i++)
-            if (!this._skills.get(i)._initialized)
-                this._skills.get(i).setGrade(FactoryHolder._configManager.getNumberValue("DEFAULT_SKILL_GRADE"));
-        
-        
-        // EXPERIENCE SETUP.
-        
-        // All skills experience is randomized with a maximum.
-        for (int i = 0; i < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); i++)
-            this._skills.get(i).addExperience(this._random.nextInt(FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_EXPERIENCE") + 1));
-        
-        */
-        
-        // Obeying to old version for now.
-        
-        //FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_INFORMATION, "Creating new Agent (old version)");
-        
         for (int i = 0; i < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); i++)
             this._skills.add(new cSkill(FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").get(i).toString()));
         
@@ -79,12 +48,6 @@ public class SolverAgent implements Comparable<SolverAgent>
         this._stats._rejected = 0;
         this._skills = (ArrayList<cSkill>)_skills.clone();
         
-        //for (int i = 0; i < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); i++) 
-        //{
-        //    // We're converting grade to exp and set grade back to 0, because from now over we will not use grade anymore.
-        //    this._skills.get(i).setExperience(GradeTableConverter.gradeToExp(this._skills.get(i).getGrade()));
-        //    this._skills.get(i).setGrade(0);
-        //}
     }
     
     public cStatistics getStats()
@@ -258,6 +221,8 @@ public class SolverAgent implements Comparable<SolverAgent>
     {
         ArrayList<cSkill> _newSet = new ArrayList<>();
         cSkill _newSkillSlot = null;
+        
+        this._stats._clonedTimes++;
         
         if (FactoryHolder._configManager.getStringValue("ENABLE_MUTATION_RATE").equals("true")) 
         {

@@ -114,6 +114,7 @@ public class ConfigManager
             if (entry.getKey().toLowerCase().equals(_key.toLowerCase()))
                 return (ArrayList)entry.getValue();
         
+        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, _key + " not found");
         return null;
     }
     
@@ -123,6 +124,7 @@ public class ConfigManager
             if (entry.getKey().toLowerCase().equals(_key.toLowerCase()))
                 return Float.parseFloat(entry.getValue().toString());
         
+        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, _key + " not found");
         return -0xFFFF;
     }
     
@@ -132,6 +134,7 @@ public class ConfigManager
             if (entry.getKey().toLowerCase().equals(_key.toLowerCase()))
                 return Integer.parseInt(entry.getValue().toString());
         
+        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, _key + " not found");
         return -0xFFFF;
     }
     
@@ -146,6 +149,7 @@ public class ConfigManager
             if (entry.getKey().toLowerCase().equals(_key.toLowerCase()))
                 return (String)entry.getValue().toString();
         
+        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, _key + " not found");
         return null;
     }
 }

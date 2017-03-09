@@ -18,4 +18,6 @@ public class cStatistics
     public int _rejected = 0;
     public int _money = 0;
     public int _generalExperience = 0;
+    public int _idledRounds = 0;
+    public int _clonedTimes = 0;
 }

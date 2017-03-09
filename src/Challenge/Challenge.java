@@ -30,6 +30,7 @@ public class Challenge implements Comparable<Challenge>
     private ArrayList<SolverAgent> _tryHarders = new ArrayList<>();
     private ArrayList<SolverAgent> _tryHarderRejected = new ArrayList<>();
     private boolean _isSolved = false;
+    public int _idledRounds = 0;
     
     // We check the difficulty map is correct (has maximum the same amount of values of the amount of skills registered)
     private int _getBound()
@@ -128,6 +129,18 @@ public class Challenge implements Comparable<Challenge>
             this._difficultyMap[i] -= _rate * this._difficultyMap[i] / 100;
     }
     
+    private void _mutateNegative(int _index) 
+    {
+        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PROBLEM_MUTATION_RATE") + 1);
+        this._difficultyMap[_index] = (this._difficultyMap[_index] - _rate) * (this._difficultyMap[_index] / 100);
+    }
+
+    private void _mutatePositive(int _index) 
+    {
+        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PROBLEM_MUTATION_RATE") + 1);
+        this._difficultyMap[_index] = (this._difficultyMap[_index] + _rate) * (this._difficultyMap[_index] / 100);
+    }
+    
     public void mutate()
     {
         if (FactoryHolder._configManager.getStringValue("ENABLE_PROBLEM_MUTATION").equals("true"))
@@ -136,13 +149,15 @@ public class Challenge implements Comparable<Challenge>
             
             if (FactoryHolder._configManager.getStringValue("PROBLEM_MUTATION_SIGN").equals("+/-"))
             {
-                _sign = this._random.nextBoolean();
+                for (int i = 0; i < this._getBound(); i++)
+                {
+                    _sign = this._random.nextBoolean();
                 
-                if (_sign)
-                    this._mutatePositive();
-                else
-                    this._mutateNegative();
-                
+                    if (_sign)
+                        this._mutatePositive(i);
+                    else
+                        this._mutateNegative(i);
+                }
             } else if (FactoryHolder._configManager.getStringValue("PROBLEM_MUTATION_SIGN").equals("-"))
                 this._mutateNegative();
             else if (FactoryHolder._configManager.getStringValue("PROBLEM_MUTATION_SIGN").equals("+"))
@@ -154,6 +169,8 @@ public class Challenge implements Comparable<Challenge>
         this._reward = this._totalDifficulty / 2;
         this._solvers.clear();
         this._tryHarders.clear();
+        this._isSolved = false;
+        this._idledRounds = 0;
     }
 
     @Override
@@ -172,21 +189,18 @@ public class Challenge implements Comparable<Challenge>
         for (int i = 0; i < this._getBound(); i++)
         {
             _randomer = this._random.nextDouble();
-            // First of all, it must have experience for the required skills.
             if (_agent.getSkill(this._skillTypes.get(i).getName()).getExperience() != 0)
             {
-                // Not exactly understood what you tryed to do here, but there should be a factor who's regulating wheter it's too easy for the agent.
                 if (!(this._difficultyMap[i] / 
                         _agent.getSkill(this._skillTypes.get(i).getName()).getExperience()
                         > FactoryHolder._configManager.getFloatValue("PROBLEM_DEADLINE")))
                 {
-                    // There must be a minimum of difference between the challenge and the agent experience + easy to reject?
                     if ((_agent.getSkill(this._skillTypes.get(i).getName()).getExperience()
                             - this._difficultyMap[i])
                             >= FactoryHolder._configManager.getNumberValue("PROBLEM_MINIMAL_DIFFERENCE")
                             && !FactoryHolder._configManager.getStringValue("PROBLEM_EASYREJECTOR").equals("true"))
                     {
-                        // We have a list of agents who at least could do it.
+                        /*
                         this._tryHarders.add(_agent);
                         
                         double _difference = (double)(
@@ -198,14 +212,11 @@ public class Challenge implements Comparable<Challenge>
                         
                         if ((_randomer < _chance)) 
                         {
-                            // But he failed and rejected the challenge...shame wall entry.
                             _agent._incrementRejected();
                             this._tryHarderRejected.add(_agent);
                             return false;
                         }
-                        
-                        // Actually seems like the agent resolved the challenge, register the winner and set status to resolved.
-                        // Also remove it from the tryHarders list because it's already registered as solver.
+                        */
                         this._solvers.add(_agent);
                         this._tryHarders.remove(_agent);
                         _agent.giveReward(this._reward);

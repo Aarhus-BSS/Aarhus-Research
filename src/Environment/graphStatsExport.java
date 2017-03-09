@@ -53,8 +53,6 @@ public class graphStatsExport
         return 0;
     }
     
-    
-    
     public static ChartPanel[] renderGraphs(ArrayList<cRound> _rounds, roundStatsHolder _globalStats)
     {
         ChartPanel[] _outGraphs = new ChartPanel[5];

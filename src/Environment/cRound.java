@@ -49,7 +49,7 @@ public class cRound implements IRound
     private void _pGenerationChanceStep()
     {
         int _curChance = this._random.nextInt(100);
-        if (_curChance < FactoryHolder._configManager.getNumberValue("CHANCE_OF_GENERATION"))
+        if (_curChance < FactoryHolder._configManager.getNumberValue("PA_EXPONENTIAL_GENERATION_CHANCE"))
         {
             if (!this._pAgents.isEmpty())
             {
@@ -72,14 +72,21 @@ public class cRound implements IRound
     private void _sGenerationChanceStep()
     {
         int _curChance = this._random.nextInt(100);
-        if (_curChance < FactoryHolder._configManager.getNumberValue("CHANCE_OF_GENERATION"))
+        if (_curChance < FactoryHolder._configManager.getNumberValue("SA_EXPONENTIAL_GENERATION_CHANCE"))
         {
             if (!this._sAgents.isEmpty())
             {
                 FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "New sagent clone creation:");
                 int _randomPick = this._random.nextInt(this._sAgents.size());
-                this._sAgents.add(this._sAgents.get(_randomPick).clone());
-                FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, this._sAgents.get(this._sAgents.size() - 1).toString());
+                if (FactoryHolder._configManager.getStringValue("SA_ENABLE_MAX_CLONATION").equals("true")) {
+                    if (this._sAgents.get(_randomPick).getStats()._clonedTimes <= FactoryHolder._configManager.getNumberValue("SA_MAX_CLONATIONS")) {
+                        this._sAgents.add(this._sAgents.get(_randomPick).clone());
+                    } else {
+                        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "Max clonations for " + this._sAgents.get(_randomPick) + " reached, skipping.");
+                    }
+                } else {
+                    this._sAgents.add(this._sAgents.get(_randomPick).clone());
+                }
             } else
                 FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "Trying to clone a sagent, but there aren't...");
         }
@@ -106,12 +113,6 @@ public class cRound implements IRound
             
             this._challenge.add(_tmp.getChallengeProposed());
         }
-        
-        this._pGenerationChanceStep();
-        
-        // Exponential randomized clonation
-        for (int i = 0; i < FactoryHolder._configManager.getNumberValue("EXPONENTIAL_GENERATION_CHANCE"); i++)
-            this._pGenerationChanceStep();
     }
     
     public ArrayList<Challenge> exportChallenges()
@@ -121,9 +122,9 @@ public class cRound implements IRound
     
     public cRound(int _round, ArrayList<SolverAgent> _sAPool, ArrayList<ProposerAgent> _pAPool, ArrayList<Challenge> _challenges)
     {
-        this._sAgents = _sAPool;//(ArrayList<SolverAgent>) _sAPool.clone();
-        this._pAgents = _pAPool;//(ArrayList<ProposerAgent>) _pAPool.clone();
-        this._challenge = _challenges;//(ArrayList<Challenge>) _challenges.clone();
+        this._sAgents = _sAPool;
+        this._pAgents = _pAPool;
+        this._challenge = _challenges;
         this._sAgents.forEach((i) -> { i.resetForNewRound(); });
         
         for (int i = 0; i < FactoryHolder._configManager.getNumberValue("MORTALITY_RATE"); i++)
@@ -155,6 +156,11 @@ public class cRound implements IRound
         
         if (!this._eradicated)
             this._pGenerationChanceStep();
+        
+        for (int i = 0; i < FactoryHolder._configManager.getNumberValue("PA_EXPONENTIAL_GENERATION_CHANCE"); i++)
+            this._pGenerationChanceStep();
+        
+        this._checkRageQuitters();
     }
     
     public cRound(cSkill _type, int _round)
@@ -168,30 +174,47 @@ public class cRound implements IRound
         return this._groupPool;
     }
     
+    public void _checkRageQuitters()
+    {
+        int _removedAgents = 0;
+        int _removedChallenges = 0;
+        
+        for (int i = 0; i < this._sAgents.size(); i++)
+            if (this._sAgents.get(i).getStats()._idledRounds >= FactoryHolder._configManager.getNumberValue("MAX_IDLED_ROUNDS"))
+            {
+                this._deadSAgents.add(this._sAgents.get(i));
+                this._sAgents.remove(i);
+                _removedAgents++;
+            }
+        
+        for (int i = 0; i < this._challenge.size(); i++)
+            if (this._challenge.get(i)._idledRounds >= FactoryHolder._configManager.getNumberValue("MAX_CHALLENGE_IDLE_ROUNDS"))
+            {
+                ProposerAgent _reference = this._challenge.get(i).getAuthor();
+                this._deadPAgents.add(_reference);
+                this._pAgents.remove(_reference);
+                this._deadChallenges.add(this._challenge.get(i));
+                this._challenge.remove(i);
+                _removedChallenges++;
+            }
+        
+        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "Removed " + _removedAgents + " agents for rage quitting.");
+        FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "Removed " + _removedChallenges + " challenges for community's incompetency.");
+    }
+    
     public void run()
     {
         if (!this._eradicated)
         {
-            for (int i = 0; i < FactoryHolder._configManager.getNumberValue("EXPONENTIAL_GENERATION_CHANCE"); i++)
+            for (int i = 0; i < FactoryHolder._configManager.getNumberValue("SA_EXPONENTIAL_GENERATION_CHANCE"); i++)
                 this._sGenerationChanceStep();
         
-            // Paradoxally, a switch is more time and resources consuming than a if else if else if else if else...
             if (FactoryHolder._configManager.getStringValue("GAME_TYPE").equals("sorted"))
             {
                 Collections.sort(this._challenge);
                 Collections.sort(this._sAgents);
                 this._match();
-
-                int _startingAgents = this._sAgents.size();
-
-                this._sAgents = this.getRemovedSAgents(this._sAgents, this._roundIndex);
-                this._pAgents = this.getRemovedPAgents(this._pAgents, this._roundIndex);
-
-                if (this._sAgents.size() - _startingAgents > 0)
-                    FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "This round killed " + (this._sAgents.size() - _startingAgents) + " agents.");
-                else if (this._sAgents.size() - _startingAgents < 0)
-                    FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "This round joined " + (this._sAgents.size() - _startingAgents) * - 1 + " agents.");
-
+                
             } else if (FactoryHolder._configManager.getStringValue("GAME_TYPE").equals("random")) {
                 FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, "Random based game mode is not enabled in this version.");
             } else if (FactoryHolder._configManager.getStringValue("GAME_TYPE").equals("skill_based")) {
@@ -205,6 +228,7 @@ public class cRound implements IRound
     private void _match()
     {
         int _trials = 0;
+        ArrayList<Challenge> _touchedChallenges = (ArrayList<Challenge>)this._challenge.clone();
         
         while (!this.getUnsolvedChallenges(this._challenge).isEmpty()
                 && !this.getUnsolvedSAgents(this._sAgents).isEmpty()
@@ -246,11 +270,24 @@ public class cRound implements IRound
                         }
                     } else {
                         i++;
+                        this._sAgents.get(k).getStats()._idledRounds++;
                     }
                 }
             }
             _trials++;
         }
+        
+        if (FactoryHolder._configManager.getStringValue("ENABLE_MAX_IDLED_ROUNDS_CHALLENGE").equals("true"))
+
+            for (int i = 0; i < this._challenge.size(); i++)
+                if (_touchedChallenges.get(i).equals(this._challenge.get(i)))
+                {
+                    if (_touchedChallenges.get(i).isSolved() == this._challenge.get(i).isSolved())
+                        this._challenge.get(i)._idledRounds++;
+                } else
+                    FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, "We're not talking about the same challenge here...");
+        
+        /*
         
         _trials = 0;
         while (this.checkUnsolvedPresence(this._challenge)
@@ -281,24 +318,7 @@ public class cRound implements IRound
             }
             _trials++;
         }
-        
-        //for (SolverAgent i: this._sAgents)
-        //    if (i.getHasSolvedLastChallenge())
-        //    {
-        //        i.setSolvedLastChallenge(true);
-        //    } else
-        //        i.setTryHarder(i.getTryHarded() + 1);
-        
-        // Delegate challenge register for another solver
-        //for (Challenge i: this._challenge)
-        //{
-        //    if (i.isSolved())
-        //    {
-        //        // Not sure about this story, seems like it has just been incrementing stuff around.
-        //    } else {
-        //        
-        //    }
-        //}
+        */
     }
     
     private boolean _canProceedWithChallenge(SolverAgent _agent, Challenge _skillMap)
