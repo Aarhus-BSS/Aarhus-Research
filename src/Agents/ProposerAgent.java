@@ -42,10 +42,10 @@ public class ProposerAgent
         for (int i = 0; i < _difficultyMap.length; i++)
             _difficultyMap[i] = 0;
         
-        for (int i = 0; i < FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_DIFFICULTYMAP"); i++)
+        for (int i = 0; i < FactoryHolder._configManager.getNumberValue("MAXIMUM_RANDOM_REQUIREMENTS_SELECTED"); i++)
         {
             int _randomAccessSkill = this._random.nextInt(FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size());
-            _difficultyMap[_randomAccessSkill] = this._random.nextInt(FactoryHolder._configManager.getNumberValue("REQUIREMENT_MAXIMUM_RANDOM_EXPERIENCE") + 1);
+            _difficultyMap[_randomAccessSkill] = this._random.nextInt(FactoryHolder._configManager.getNumberValue("MAXIMUM_RANDOM_EXPERIENCE_PER_REQUIREMENT") + 1);
         }
         
         for (int i = 0; i < _difficultyMap.length; i++)
@@ -76,7 +76,7 @@ public class ProposerAgent
     
     private ArrayList<cSkill> _mutatePositiveSkills()
     {
-        int _factor = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PA_MUTATION_RATE_VALUE"));
+        int _factor = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PA_MUTATION_RATE_VALUE") + 1);
         ArrayList<cSkill> _mutatedSkills = (ArrayList<cSkill>)this._skills.clone();
         
         for (int i = 0; i < this._skills.size(); i++)
@@ -96,13 +96,13 @@ public class ProposerAgent
         {
             boolean _sign = this._random.nextBoolean();
             if (_sign)
-                _outExp = _curExp + (FactoryHolder._configManager.getNumberValue("MUTATION_RATE_VALUE") * _curExp / 100);
+                _outExp = _curExp + (FactoryHolder._configManager.getNumberValue("PA_MUTATION_RATE_VALUE") * _curExp / 100);
             else
-                _outExp = _curExp - (FactoryHolder._configManager.getNumberValue("MUTATION_RATE_VALUE") * _curExp / 100);
+                _outExp = _curExp - (FactoryHolder._configManager.getNumberValue("PA_MUTATION_RATE_VALUE") * _curExp / 100);
         } else if (_rateoSign.equals("+")) {
-            _outExp = _curExp + (FactoryHolder._configManager.getNumberValue("MUTATION_RATE_VALUE") * _curExp / 100);
+            _outExp = _curExp + (FactoryHolder._configManager.getNumberValue("PA_MUTATION_RATE_VALUE") * _curExp / 100);
         } else if (_rateoSign.equals("-")) {
-            _outExp = _curExp - (FactoryHolder._configManager.getNumberValue("MUTATION_RATE_VALUE") * _curExp / 100);
+            _outExp = _curExp - (FactoryHolder._configManager.getNumberValue("PA_MUTATION_RATE_VALUE") * _curExp / 100);
         } else 
             FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, "Rateo sign is not recognized.");
         

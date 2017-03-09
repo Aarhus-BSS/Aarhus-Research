@@ -29,7 +29,8 @@ public class AUResearch
                 FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_INFORMATION, "Configuration editor has been requested, firing up!");
                 java.awt.EventQueue.invokeLater(new Runnable() 
                 {
-                    public void run() {
+                    public void run() 
+                    {
                         new CEditor().setVisible(true);
                     }
                 });

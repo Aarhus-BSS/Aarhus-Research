@@ -74,7 +74,7 @@ public class RoundManager
         this._createReportsInstances();
         
         this._detailData.addContent(new Object[] {this._SAgents.size(), this._PAgents.size(),
-                                                  FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_EXPERIENCE"),
+                                                  FactoryHolder._configManager.getNumberValue("SA_MAXIMUM_EXPERIENCE"),
                                                   this._roundBound, "Sorted", 
                                                   FactoryHolder._configManager.getFloatValue("DEADLINE"),
                                                   1, 1, 1, 1
@@ -106,7 +106,7 @@ public class RoundManager
         this._createReportsInstances();
     
         this._detailData.addContent(new Object[] {this._SAgents.size(), this._PAgents.size(),
-                                                  FactoryHolder._configManager.getNumberValue("MAX_RANDOMIZED_EXPERIENCE"),
+                                                  FactoryHolder._configManager.getNumberValue("SA_MAXIMUM_EXPERIENCE"),
                                                   this._roundBound, "Sorted", 
                                                   FactoryHolder._configManager.getFloatValue("DEADLINE"),
                                                   1, 1, 1, 1

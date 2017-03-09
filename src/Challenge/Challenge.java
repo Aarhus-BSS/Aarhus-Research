@@ -115,7 +115,7 @@ public class Challenge implements Comparable<Challenge>
     
     private void _mutatePositive()
     {
-        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PROBLEM_MUTATION_RATE") + 1);
+        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("CH_MUTATION_RATE") + 1);
         
         for (int i = 0; i < this._getBound(); i++)
             this._difficultyMap[i] += _rate * this._difficultyMap[i] / 100;
@@ -123,7 +123,7 @@ public class Challenge implements Comparable<Challenge>
     
     private void _mutateNegative()
     {
-        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PROBLEM_MUTATION_RATE") + 1);
+        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("CH_MUTATION_RATE") + 1);
         
         for (int i = 0; i < this._getBound(); i++)
             this._difficultyMap[i] -= _rate * this._difficultyMap[i] / 100;
@@ -131,23 +131,23 @@ public class Challenge implements Comparable<Challenge>
     
     private void _mutateNegative(int _index) 
     {
-        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PROBLEM_MUTATION_RATE") + 1);
+        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("CH_MUTATION_RATE") + 1);
         this._difficultyMap[_index] = (this._difficultyMap[_index] - _rate) * (this._difficultyMap[_index] / 100);
     }
 
     private void _mutatePositive(int _index) 
     {
-        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("PROBLEM_MUTATION_RATE") + 1);
+        int _rate = this._random.nextInt(FactoryHolder._configManager.getNumberValue("CH_MUTATION_RATE") + 1);
         this._difficultyMap[_index] = (this._difficultyMap[_index] + _rate) * (this._difficultyMap[_index] / 100);
     }
     
     public void mutate()
     {
-        if (FactoryHolder._configManager.getStringValue("ENABLE_PROBLEM_MUTATION").equals("true"))
+        if (FactoryHolder._configManager.getStringValue("CH_ENABLE_MUTATION").equals("true"))
         {
             boolean _sign = false;
             
-            if (FactoryHolder._configManager.getStringValue("PROBLEM_MUTATION_SIGN").equals("+/-"))
+            if (FactoryHolder._configManager.getStringValue("CH_MUTATION_SIGN").equals("+/-"))
             {
                 for (int i = 0; i < this._getBound(); i++)
                 {
@@ -158,9 +158,9 @@ public class Challenge implements Comparable<Challenge>
                     else
                         this._mutateNegative(i);
                 }
-            } else if (FactoryHolder._configManager.getStringValue("PROBLEM_MUTATION_SIGN").equals("-"))
+            } else if (FactoryHolder._configManager.getStringValue("CH_MUTATION_SIGN").equals("-"))
                 this._mutateNegative();
-            else if (FactoryHolder._configManager.getStringValue("PROBLEM_MUTATION_SIGN").equals("+"))
+            else if (FactoryHolder._configManager.getStringValue("CH_MUTATION_SIGN").equals("+"))
                 this._mutatePositive();
             else
                 FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, "Mutation sign for challenge is unrecognized.");
@@ -193,12 +193,12 @@ public class Challenge implements Comparable<Challenge>
             {
                 if (!(this._difficultyMap[i] / 
                         _agent.getSkill(this._skillTypes.get(i).getName()).getExperience()
-                        > FactoryHolder._configManager.getFloatValue("PROBLEM_DEADLINE")))
+                        > FactoryHolder._configManager.getFloatValue("CH_DEADLINE")))
                 {
                     if ((_agent.getSkill(this._skillTypes.get(i).getName()).getExperience()
                             - this._difficultyMap[i])
-                            >= FactoryHolder._configManager.getNumberValue("PROBLEM_MINIMAL_DIFFERENCE")
-                            && !FactoryHolder._configManager.getStringValue("PROBLEM_EASYREJECTOR").equals("true"))
+                            >= FactoryHolder._configManager.getNumberValue("CH_MINIMAL_DIFFERENCE")
+                            && !FactoryHolder._configManager.getStringValue("CH_EASYREJECTOR").equals("true"))
                     {
                         /*
                         this._tryHarders.add(_agent);
