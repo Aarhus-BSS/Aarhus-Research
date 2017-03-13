@@ -3,7 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Graphics/CEditor.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Environment/RoundManager.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Graphics/MainMenu.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Agents/Properties/cStatistics.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Environment/cRound.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Challenge/Challenge.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Agents/SolverAgent.java</file>
+            <file>file:/C:/Aarhus%20University/Aarhus-Research/src/Agents/ProposerAgent.java</file>
         </group>
     </open-files>
 </project-private>

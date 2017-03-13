@@ -172,6 +172,12 @@ public class Challenge implements Comparable<Challenge>
         this._isSolved = false;
         this._idledRounds = 0;
     }
+    
+    public Challenge giveMutate()
+    {
+        this.mutate();
+        return this;
+    }
 
     @Override
     public int compareTo(Challenge _challenge) 
@@ -191,10 +197,6 @@ public class Challenge implements Comparable<Challenge>
             _randomer = this._random.nextDouble();
             if (_agent.getSkill(this._skillTypes.get(i).getName()).getExperience() != 0)
             {
-                if (!(this._difficultyMap[i] / 
-                        _agent.getSkill(this._skillTypes.get(i).getName()).getExperience()
-                        > FactoryHolder._configManager.getFloatValue("CH_DEADLINE")))
-                {
                     if ((_agent.getSkill(this._skillTypes.get(i).getName()).getExperience()
                             - this._difficultyMap[i])
                             >= FactoryHolder._configManager.getNumberValue("CH_MINIMAL_DIFFERENCE")
@@ -224,12 +226,8 @@ public class Challenge implements Comparable<Challenge>
                         this._isSolved = true;
                         
                         return true;
-                    } else
-                        return false;
-                } else
-                    return false;
-            } else
-                return false;
+                    }
+            }
         }
         
         return false;

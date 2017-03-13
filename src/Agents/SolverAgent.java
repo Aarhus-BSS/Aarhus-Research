@@ -37,17 +37,20 @@ public class SolverAgent implements Comparable<SolverAgent>
         this._stats._successTrials = 0;
         this._stats._trials = 0;
         this._stats._rejected = 0;
+        this._stats._idledRounds = 0;
     }
     
     public void _setupAgent(ArrayList<cSkill> _skills)
     {
         FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_DEBUG, "Creating new Agent (prebuilt skills)");
+        this._stats = new cStatistics();
+        
         this._stats._money = 0;
         this._stats._successTrials = 0;
         this._stats._trials = 0;
         this._stats._rejected = 0;
+        this._stats._idledRounds = 0;
         this._skills = (ArrayList<cSkill>)_skills.clone();
-        
     }
     
     public cStatistics getStats()
