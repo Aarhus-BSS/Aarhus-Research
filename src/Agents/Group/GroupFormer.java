@@ -36,39 +36,97 @@ public class GroupFormer
         this._createGroups(_sAgents, _MODEL_SETUP.MODEL_1A);
     }
 
-    private boolean _canProceedWithChallenge(SolverAgent _agent, Challenge _skillMap) {
-        for (int k = 0; k < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); ++k) {
-            if (_agent.getSkills().get(k).getExperience() > _skillMap.getDifficultyMap()[k]) continue;
-            return false;
-        }
+    private boolean _canProceedWithChallenge(SolverAgent _agent, Challenge _skillMap) 
+    {
+        for (int k = 0; k < FactoryHolder._configManager.getArrayValue("AGENT_SKILLS").size(); ++k) 
+            if (_agent.getSkills().get(k).getExperience() < _skillMap.getDifficultyMap()[k]) 
+                return false;
+            
         return _agent.getTryHarded() <= FactoryHolder._configManager.getNumberValue("NUMBER_OF_TRIALS_FOR_SINGLE_AGENT_SOLVING");
+    }
+    
+    private static double sigmoid(double x) 
+    {
+        return (1 / (1 + Math.pow(Math.E, (-1 * x))));
     }
 
     private void _createGroups(ArrayList<SolverAgent> _sAgents, _MODEL_SETUP _model) {
         this._requestedMethod = _model;
-        this._sAPool = (ArrayList)_sAgents.clone();
-        switch (this._requestedMethod) {
-            case MODEL_1A: {
-                Collections.sort(this._sAPool, (p1, p2) -> p1.getSkills().get(0).getExperience() - p2.getSkills().get(0).getExperience());
-                for (SolverAgent i : this._sAPool) {
-                    if (!this._canProceedWithChallenge(i, this._challenge)) continue;
-                }
+        this._sAPool = _sAgents;
+        switch (this._requestedMethod) 
+        {
+            case MODEL_1A: 
+            
+                
                 break;
-            }
-            case MODEL_1B: {
+            
+            case MODEL_1B: 
+            
                 break;
-            }
-            default: {
+            
+            case MODEL_1A_WR:
+                
+                break;
+                
+            case MODEL_1B_WR:
+                
+                break;
+            default: 
                 FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, "Incorrect model specified in group formation process.");
-            }
         }
     }
+    
+    private double[] _extractRequirements(Challenge _challenge)
+    {
+        double _requirements[] = new double[_challenge.getDifficultyMap().length];
+        int _reqAmount = 0;
+        
+        for (int i = 0; i < _challenge.getDifficultyMap().length; i++)
+            if (_challenge.getDifficultyMap()[i] > 0)
+                _requirements[_reqAmount++] = _challenge.getDifficultyMap()[i];
+        
+        double _filteredRequirements[] = new double[_reqAmount];
+        
+        for (int i = 0; i < _reqAmount; i++)
+            _filteredRequirements[i] = _requirements[i];
+        
+        return _filteredRequirements;
+    }
+    
+    public boolean attemptSolve(int _groupIndex, Challenge _challenge)
+    {
+        if (!this._groupPool.isEmpty())
+        {
+            if (FactoryHolder._configManager.getStringValue("USE_SIGMOID").equals("true"))
+            {
+                double _saturationPoints[] = new double[this._extractRequirements(_challenge).length];
+                for (int i = 0; i < _saturationPoints.length; i++)
+                    _saturationPoints[i] = 0;
+                
+                for (int i = 0; i < _saturationPoints.length; i++)
+                {
+                    for (int k = 0; k < FactoryHolder._configManager.getArrayValue("AGENT_SKILL").size(); k++)
+                    {
+                        
+                    }
+                }
+                
+            } else {
+                    
+            }
+        } else
+            FactoryHolder._logManager.print(ILogManager._LOG_TYPE.TYPE_ERROR, "No groups, can't try to solve anything here.");
+        
+        return false;
+    }
 
-    public ArrayList<Group> getFormedGroups() {
+    public ArrayList<Group> getFormedGroups() 
+    {
         return this._groupPool;
     }
 
-    public long getGroupCount() {
+    public long getGroupCount() 
+    {
         return this._groupPool.size();
     }
 }

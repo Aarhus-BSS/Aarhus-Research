@@ -12,7 +12,9 @@ package Agents.Group;
 enum _MODEL_SETUP 
 {
     MODEL_1A,
-    MODEL_1B;
+    MODEL_1B,
+    MODEL_1A_WR,
+    MODEL_1B_WR;
     
     private _MODEL_SETUP() 
     {
